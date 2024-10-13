@@ -1,1 +1,3 @@
 # AntiRacialBias
+
+Rapid racial fairness identifier and corrector by taking a dataset of the US Census Income from Kaggle and trianing it in the XGBOOST model to see the results. Disparities in result within different racial groups will be mitigated by examining FPR (False Positive Rates) and FNR (False Negative Rates) across different racial groups. Then equalized odds will be applied to equalize the false positive rates across racial groups. The results will be compared in a Dash dashboard to compare the results and see if the racial fixing algorithm is successful. The impact is that it allows governments to fairly give the proper stimulus packages to minority groups more accurately and allows loan algorithms to not discriminate against minority groups. 
