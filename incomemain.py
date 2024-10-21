@@ -1,8 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import data.data as data
-import data.preproccessing as preproccessing
-import models.model_pipeline as model_pipeline
+import data.income.data as data
+import data.income.preproccessing as preproccessing
+import models.income.model_pipeline as model_pipeline
 import evaluations.racialBiasDetection as racialBiasDetection
 import postprocessing.postprocessing as postprocessing
 import evaluations.racialBiasDetection as racialBiasDetection
@@ -34,11 +34,11 @@ pipeline = model_pipeline.CustomPipeline()
 pipeline.fit(X_train, y_train, X_test, y_test, data, X_test_indices)
 
 # Evaluate bias for each racial group using false positive and false negatives
-racialBiasDetection.evaluate_bias(X_test, y_test, model_pipeline.get_final_pred(), data, X_test_indices)
+racialBiasDetection.evaluate_bias(X_test, y_test, model_pipeline.get_final_pred(), data, X_test_indices, 'race')
 
 # Evaluate the model with post-processing to ensure fairness
-postprocessing.equalize(data, pipeline, X_train, y_train, X_test, y_test, X_test_indices, X_train_indices)
+postprocessing.equalize(data, pipeline, X_train, y_train, X_test, y_test, X_test_indices, X_train_indices, 'race')
 
 # Evaluate raical bias with this post-proccessing
 racialBiasDetection.evaluate_bias(X_test, y_test, 
-        postprocessing.get_y_pred_fixed(), data, X_test_indices)
+        postprocessing.get_y_pred_fixed(), data, X_test_indices, 'race')

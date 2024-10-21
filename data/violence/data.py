@@ -11,13 +11,13 @@ def saveDataPath(dataset_dir):
         json.dump(dataset_dir, file, indent=4) #.dump() overwrites old json file and saves the new data
 
 # Define the path to the JSON file
-json_file_path = 'dataPath.json'
+json_file_path = 'recidivismdataPath.json'
 # Load the list from the JSON file if it exists, otherwise use the default list
 if os.path.exists(json_file_path):
     with open(json_file_path, 'r') as file:
         dataset_dir = json.load(file)
 else:
-    dataset_dir = kagglehub.dataset_download("uciml/adult-census-income")
+    dataset_dir = kagglehub.dataset_download("danofer/compass")
     saveDataPath(dataset_dir)
 
 dataset_dir = "/path/to/dataset_directory"  # Define the directory where datasets are downloaded
@@ -29,7 +29,7 @@ def download_and_refresh_dataset():
         print(f"Old dataset deleted from {dataset_dir}")
 
     # Download the new dataset
-    path = kagglehub.dataset_download("uciml/adult-census-income")
+    path = kagglehub.dataset_download("danofer/compass")
     # Test print to see where the dataset is downloaded. Path
     print("New dataset downloaded to:", path)
     saveDataPath(path)
@@ -43,10 +43,11 @@ new_path = download_and_refresh_dataset()
 files = os.listdir(new_path)
 print("Files in directory:", files)
 
-# Find the CSV file (assuming there's only one CSV file)
+csv_file_name = 'cox-violent-parsed_filt.csv'
+# Find the CSV file specified!
 csv_file = None
 for file in files:
-    if file.endswith('.csv'):
+    if file == csv_file_name:
         csv_file = file
         break
 

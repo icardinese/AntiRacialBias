@@ -1,0 +1,18 @@
+{
+    "random_forest_model": {
+        "n_estimators": 500,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "log2",
+        "max_depth": 30,
+        "criterion": "gini",
+        "bootstrap": false
+    },
+    "xgb_model": {
+        "subsample": 0.8,
+        "n_estimators": 200,
+        "max_depth": 7,
+        "learning_rate": 0.3,
+        "colsample_bytree": 1.0
+    }
+}
