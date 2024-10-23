@@ -77,7 +77,7 @@ def hyperparametertuning(model, param_grid, X_train, y_train, label):
     # Get best parameters and save them to a file
     best_params = search.best_params_
     try:
-        with open('best_hyperparameters.json', 'r+') as f:
+        with open('classification_hyperparameters.json', 'r+') as f:
             try:
                 data = json.load(f)
             except json.JSONDecodeError:
@@ -87,7 +87,7 @@ def hyperparametertuning(model, param_grid, X_train, y_train, label):
             json.dump(data, f, indent=4)
             f.truncate()
     except FileNotFoundError:
-        with open('best_hyperparameters.json', 'w') as f:
+        with open('classification_hyperparameters.json', 'w') as f:
             data = {label: best_params}
             json.dump(data, f, indent=4)
 
