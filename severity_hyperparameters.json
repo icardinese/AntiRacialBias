@@ -1,0 +1,11 @@
+{
+    "xgb_model": {
+        "subsample": 0.6,
+        "objective": "multi:softmax",
+        "num_class": 9,
+        "n_estimators": 300,
+        "max_depth": 7,
+        "learning_rate": 0.01,
+        "colsample_bytree": 0.6
+    }
+}

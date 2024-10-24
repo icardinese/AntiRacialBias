@@ -269,6 +269,9 @@ y_violence_severity = recidivismData['vr_charge_degree']
 y_recidivism_severity = y_recidivism_severity.map({'(F1)': 8, '(F2)': 7, '(F3)': 6, 
         '(F6)': 5, '(F7)': 4, '(M1)': 3, '(M2)': 2, '(MO3)': 1, '(CO3)': 0})
 
+y_violence_severity = y_violence_severity.map({'(F1)': 8, '(F2)': 7, '(F3)': 6, 
+        '(F6)': 5, '(F7)': 4, '(M1)': 3, '(M2)': 2, '(MO3)': 1, '(CO3)': 0})
+
 # Split data for recidivism and violence classification
 X_recidivism_train, X_recidivism_test, y_recidivism_severity_train, y_recidivism_severity_test = train_test_split(
     X_recidivism, y_recidivism_severity, test_size=0.2, random_state=42)
