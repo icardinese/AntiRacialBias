@@ -1,0 +1,30 @@
+/* Override Bootstrap styles or add custom styles here */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Bootstrap's light gray background */
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.jumbotron {
+    margin-bottom: 0;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* Additional custom styles as needed */

@@ -1,0 +1,14 @@
+<!-- scan_pdf.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Upload PDF for Data Extraction</h2>
+    <form action="{{ url_for('scan_pdf') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="pdf_file">Select PDF File:</label>
+            <input type="file" class="form-control-file" name="pdf_file" accept="application/pdf" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload and Extract Data</button>
+    </form>
+</div>
+{% endblock %}

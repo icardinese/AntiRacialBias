@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Input Data</h2>
+    <form action="{{ url_for('input_form') }}" method="post">
+        <!-- Numerical Inputs -->
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" name="age" value="{{ prefill_data.get('age', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="juv_fel_count">Juvenile Felony Count:</label>
+                <input type="number" class="form-control" name="juv_fel_count" value="{{ prefill_data.get('juv_fel_count', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="juv_misd_count">Juvenile Misdemeanor Count:</label>
+                <input type="number" class="form-control" name="juv_misd_count" value="{{ prefill_data.get('juv_misd_count', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="juv_other_count">Juvenile Other Count:</label>
+                <input type="number" class="form-control" name="juv_other_count" value="{{ prefill_data.get('juv_other_count', '') }}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="priors_count">Prior Crimes Count:</label>
+                <input type="number" class="form-control" name="priors_count" value="{{ prefill_data.get('priors_count', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="days_b_screening_arrest">Days Before Screening Arrest:</label>
+                <input type="number" class="form-control" name="days_b_screening_arrest" value="{{ prefill_data.get('days_b_screening_arrest', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="c_days_from_compas">Days From COMPAS:</label>
+                <input type="number" class="form-control" name="c_days_from_compas" value="{{ prefill_data.get('c_days_from_compas', '') }}" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="decile_score">Decile Score:</label>
+                <input type="number" class="form-control" name="decile_score" value="{{ prefill_data.get('decile_score', '') }}" required>
+            </div>
+        </div>
+
+        <!-- Categorical Ordinal Inputs -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="score_text">Score Text:</label>
+                <select class="form-control" name="score_text" required>
+                    <option value="Low" {% if prefill_data.get('score_text') == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if prefill_data.get('score_text') == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if prefill_data.get('score_text') == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="c_charge_degree">Charge Degree:</label>
+                <select class="form-control" name="c_charge_degree" required>
+                    <option value="M" {% if prefill_data.get('c_charge_degree') == 'M' %}selected{% endif %}>Misdemeanor</option>
+                    <option value="F" {% if prefill_data.get('c_charge_degree') == 'F' %}selected{% endif %}>Felony</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Categorical Nominal Inputs -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="sex">Sex:</label>
+                <select class="form-control" name="sex" required>
+                    <option value="Male" {% if prefill_data.get('sex') == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if prefill_data.get('sex') == 'Female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="race">Race:</label>
+                <select class="form-control" name="race" required>
+                    <option value="African-American" {% if prefill_data.get('race') == 'African-American' %}selected{% endif %}>African-American</option>
+                    <option value="Caucasian" {% if prefill_data.get('race') == 'Caucasian' %}selected{% endif %}>Caucasian</option>
+                    <option value="Hispanic" {% if prefill_data.get('race') == 'Hispanic' %}selected{% endif %}>Hispanic</option>
+                    <option value="Asian" {% if prefill_data.get('race') == 'Asian' %}selected{% endif %}>Asian</option>
+                    <option value="Native American" {% if prefill_data.get('race') == 'Native American' %}selected{% endif %}>Native American</option>
+                    <option value="Other" {% if prefill_data.get('race') == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+</div>
+{% endblock %}

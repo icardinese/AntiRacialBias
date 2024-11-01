@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Prediction Results</h2>
+    <div class="row">
+        <!-- Recidivism Prediction Card -->
+        <div class="col-md-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Recidivism Prediction</div>
+                <div class="card-body">
+                    <p class="card-text">Probability: <strong>{{ (recidivism_prob * 100) | round(2) }}%</strong></p>
+                    <p class="card-text">Risk Level: <span class="badge badge-pill badge-light">{{ recidivism_score }}</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Violent Recidivism Prediction Card -->
+        <div class="col-md-6">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Violent Recidivism Prediction</div>
+                <div class="card-body">
+                    <p class="card-text">Probability: <strong>{{ (violent_recidivism_prob * 100) | round(2) }}%</strong></p>
+                    <p class="card-text">Risk Level: <span class="badge badge-pill badge-light">{{ violent_recidivism_score }}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

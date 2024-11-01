@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron jumbotron-fluid text-center text-white" style="background-image: url('{{ url_for('static', filename='images/justice-bg.jpg') }}'); background-size: cover; background-position: center;">
+    <div class="container">
+        <h1 class="display-4">Predicting the Future of Justice</h1>
+        <p class="lead">Experience the power of advanced analytics in assessing recidivism risks.</p>
+        <a href="{{ url_for('input_form') }}" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+</div>
+{% endblock %}
