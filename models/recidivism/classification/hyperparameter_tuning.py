@@ -98,4 +98,3 @@ def hyperparametertuning(model, param_grid, X_train, y_train, label):
 
 # Random Forest hyperparameter tuning. Example
 # hyperparametertuning(RandomForestClassifier(), RandomForest_param_grid, X_recidivism_train, y_recidivism_classification_train, 'random_forest_model')
-

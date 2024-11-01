@@ -17,8 +17,8 @@ class XGBoostModel:
         best_params = None
 
         # Load or tune hyperparameters
-        if os.path.exists('best_hyperparameters.json'):
-            with open('best_hyperparameters.json', 'r') as f:
+        if os.path.exists('severity_hyperparameters.json'):
+            with open('severity_hyperparameters.json', 'r') as f:
                 try:
                     data = json.load(f)
                     if self.label in data:
@@ -28,8 +28,8 @@ class XGBoostModel:
         
         if best_params is None:
             ht.hyperparametertuning(self.model, ht.get_xgb_param_grid(), x_train, y_train, self.label)
-            if os.path.exists('best_hyperparameters.json'):
-                with open('best_hyperparameters.json', 'r') as f:
+            if os.path.exists('severity_hyperparameters.json'):
+                with open('severity_hyperparameters.json', 'r') as f:
                     try:
                         data = json.load(f)
                         if self.label in data:
@@ -37,7 +37,7 @@ class XGBoostModel:
                     except json.JSONDecodeError:
                         print("Error loading best hyperparameters.")
         
-        self.best_model = XGBClassifier(**best_params, objective='multi:softmax', num_class=9)
+        self.best_model = XGBClassifier(**best_params)
         self.best_model.fit(x_train, y_train)
 
     def predict(self, x_test):

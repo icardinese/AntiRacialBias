@@ -3,15 +3,19 @@ from . import XGBoost as XGBoost
 from . import NueralNetwork as NueralNetwork
 from . import adversarial_network as AdversarialNetwork  # Added AdversarialNetwork
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.model_selection import KFold
 import numpy as np
+from tensorflow.keras.models import load_model
+import joblib
+from . import recidpreprocessing as rp
+from . import violencepreproccessing as vp
 
 final_pred = None
 
 class CustomPipeline(BaseEstimator, ClassifierMixin):
-    def __init__(self, X_train, y_train, X_test, y_test, data, X_test_indices, section_equalizer, adversarial=False):
+    def __init__(self, X_train, y_train, X_test, y_test, data, X_test_indices, section_equalizer, adversarial=False, training_name=None, preloadName = None):
         # Initialize the XGBoost and RandomForest models
         self.xgb_model = XGBoost.XGBoostModel()  # XGBoost model for multi-class classification
         self.rf_model = RandomForest.RandomForest()  # RandomForest model for multi-class classification
@@ -30,6 +34,8 @@ class CustomPipeline(BaseEstimator, ClassifierMixin):
         self.data = data
         self.X_test_indices = X_test_indices
         self.section_equalizer = section_equalizer
+        self.training_name = training_name  # To differentiate between different training sessions
+        self.preloadName = preloadName
 
     def fit(self, race_train=None):
         # Use KFold cross-validation for stacking
@@ -42,6 +48,13 @@ class CustomPipeline(BaseEstimator, ClassifierMixin):
             # Split data into training and validation sets for the current fold
             X_train_fold, X_val_fold = self.X_train[train_idx], self.X_train[val_idx]
             y_train_fold, y_val_fold = self.y_train[train_idx], self.y_train[val_idx]
+
+            # Ensure all classes are present in the training fold
+            all_classes = set(range(8))  # Classes expected: 0 to 7
+            missing_classes = all_classes - set(y_train_fold)
+            if missing_classes:
+                X_train_fold = np.concatenate([X_train_fold, np.zeros((len(missing_classes), X_train_fold.shape[1]))])
+                y_train_fold = np.concatenate([y_train_fold, np.array(list(missing_classes))])
 
             # Train the base models (XGBoost and RandomForest) on the training fold
             self.xgb_model.fit(X_train_fold, y_train_fold)
@@ -59,6 +72,23 @@ class CustomPipeline(BaseEstimator, ClassifierMixin):
             self.meta_classifier.fit(X_meta_train, self.y_train, race_train)
         else:
             self.meta_classifier.fit(X_meta_train, self.y_train)
+        self._save_models()
+
+    def _save_models(self):
+        # Save the models after training
+        joblib.dump(self.xgb_model, f"xgb_model_{self.training_name}.pkl")
+        joblib.dump(self.rf_model, f"rf_model_{self.training_name}.pkl")
+        # Save the model
+        self.meta_classifier.save(f'{self.training_name}')  # HDF5 format
+        print(f"Models saved as xgb_model_{self.training_name}.pkl, rf_model_{self.training_name}.pkl, and neural_network_model_{self.training_name}.h5")
+
+    def load_models(self):
+        # Load the pre-trained models
+        self.xgb_model = joblib.load(f"xgb_model_{self.preloadName}.pkl")
+        self.rf_model = joblib.load(f"rf_model_{self.preloadName}.pkl")
+        self.meta_classifier = self.meta_classifier.load(f"{self.preloadName}")
+        print(f"Models loaded from xgb_model_{self.training_name}.pkl, rf_model_{self.training_name}.pkl, and meta_classifier_{self.training_name}.pkl")
+        
 
     def predict(self):
         # Get test set predictions from the base models (XGBoost and RandomForest)
@@ -76,6 +106,18 @@ class CustomPipeline(BaseEstimator, ClassifierMixin):
         overall_accuracy = accuracy_score(self.y_test, final_pred)
         print(f"Overall accuracy: {overall_accuracy * 100.0}%")
 
+        # Calculate additional metrics
+        precision = precision_score(self.y_test, final_pred, average='weighted')
+        recall = recall_score(self.y_test, final_pred, average='weighted')
+        f1 = f1_score(self.y_test, final_pred, average='weighted')
+        conf_matrix = confusion_matrix(self.y_test, final_pred)
+
+        print(f"Precision: {precision * 100.0}%")
+        print(f"Recall: {recall * 100.0}%")
+        print(f"F1 Score: {f1 * 100.0}%")
+        print("Confusion Matrix:")
+        print(conf_matrix)
+
         # Calculate accuracy for each group defined by the section_equalizer
         X_test_original = self.data.loc[self.X_test_indices]
         racial_groups = X_test_original[self.section_equalizer].unique()
@@ -86,10 +128,59 @@ class CustomPipeline(BaseEstimator, ClassifierMixin):
         for group in racial_groups:
             group_indices = X_test_original[X_test_original[self.section_equalizer] == group].index
             group_y_test = y_test_series.loc[group_indices]
-            group_y_pred = final_pred_series.loc[group_indices]
-            group_accuracy = accuracy_score(group_y_test, group_y_pred)
+            group_final_pred = final_pred_series.loc[group_indices]
+            group_accuracy = accuracy_score(group_y_test, group_final_pred)
             print(f"Accuracy for {group}: {group_accuracy * 100.0}%")
 
+    def real_predict(self, input_data, recidivism_verdict, violence_verdict, preloadName=None):
+       # Load the pre-trained models for both recidivism and violence
+        if preloadName is not None:
+            self.load_models(preloadName)
+
+        values = []
+
+        # Preprocess input data for recidivism
+        if (recidivism_verdict == 1):
+            recidivism_data = input_data.copy()  # Copy the input so we can modify for recidivism
+            recidivism_data = recidivism_data.drop(colums=['v_decile_score', 'v_score_text'])
+            rp.preprocessor(recidivism_data)  # Preprocess only relevant fields for recidivism
+
+            # Get recidivism predictions from the XGBoost and RandomForest models
+            xgb_recidivism_pred = self.xgb_model.predict(recidivism_data)
+            rf_recidivism_pred = self.rf_model.predict(recidivism_data)
+            
+            # Stack recidivism predictions for meta-prediction
+            X_meta_recidivism = np.column_stack((xgb_recidivism_pred, rf_recidivism_pred))
+            recidivism_pred = self.meta_classifier.predict(X_meta_recidivism)
+            recidivism_prob = self.meta_classifier.predict_proba(X_meta_recidivism) 
+            values.append(recidivism_pred)
+            values.append(recidivism_prob)
+
+        # Preprocess input data for violence
+        if (violence_verdict == 1):
+            violence_data = input_data.copy()  # Copy the input so we can modify for violence
+            violence_data = violence_data.drop(columns=['decile_score', 'score_text'])
+            vp.preprocessor(violence_data)  # Preprocess only relevant fields for violence
+    
+            # Get violence predictions from the XGBoost and RandomForest models
+            xgb_violence_pred = self.xgb_model.predict(violence_data)
+            rf_violence_pred = self.rf_model.predict(violence_data)
+            
+            # Stack violence predictions for meta-prediction
+            X_meta_violence = np.column_stack((xgb_violence_pred, rf_violence_pred))
+            violence_pred = self.meta_classifier.predict(X_meta_violence)
+            violence_prob = self.meta_classifier.predict_proba(X_meta_violence)
+            values.append(violence_pred)
+            values.append(violence_prob)
+
+        if len(values) == 0:
+            return None
+        if len(values) == 2:
+            return values[0], values[1]
+        if len(values) == 4:
+            return values[0], values[1], values[2], values[3]
+
+    
     def get_final_pred(self):
         return final_pred
 

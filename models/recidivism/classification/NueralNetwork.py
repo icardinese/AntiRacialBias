@@ -31,3 +31,14 @@ class NueralNetwork:
     
     def get_model(self):
         return self.model
+
+    # Save the model
+    def save(self, filename):
+        self.base_model.save(f'neural_network_model_{filename}.h5')
+    
+    # Load the model
+    def load(self, filename):
+        self.base_model = tf.keras.models.load_model(f"neural_network_model_{filename}.h5")
+        # Re-wrap the model with KerasClassifier if necessary
+        self.model = KerasClassifier(build_fn=lambda: self.base_model, epochs=10,
+                                     batch_size=32, verbose=0)

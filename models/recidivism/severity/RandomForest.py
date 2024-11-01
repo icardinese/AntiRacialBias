@@ -16,8 +16,8 @@ class RandomForest:
         best_params = None
 
         # Load or tune hyperparameters
-        if os.path.exists('best_hyperparameters.json'):
-            with open('best_hyperparameters.json', 'r') as f:
+        if os.path.exists('severity_hyperparameters.json'):
+            with open('severity_hyperparameters.json', 'r') as f:
                 try:
                     data = json.load(f)
                     if self.label in data:
@@ -26,9 +26,9 @@ class RandomForest:
                     print("Error loading best hyperparameters.")
         
         if best_params is None:
-            ht.hyperparametertuning(self.model, ht.get_xgb_param_grid(), X_train, y_train, self.label)
-            if os.path.exists('best_hyperparameters.json'):
-                with open('best_hyperparameters.json', 'r') as f:
+            ht.hyperparametertuning(self.model, ht.get_random_forest_param_grid(), X_train, y_train, self.label)
+            if os.path.exists('severity_hyperparameters.json'):
+                with open('severity_hyperparameters.json', 'r') as f:
                     try:
                         data = json.load(f)
                         if self.label in data:
