@@ -22,7 +22,7 @@ def equalize(data, metaclassifier, X_train, y_train, X_test, y_test, x_test_indi
     # Ensure that metaclassifier is wrapped in a KerasClassifier to be sklearn-compatible
     postprocess_est = ThresholdOptimizer(
         estimator=metaclassifier,  # This is now a KerasClassifier
-        constraints="equalized_odds",  # Equalize FPR across groups
+        constraints="true_positive_rate_parity",  # Equalize FPR across groups
         objective="accuracy_score"
     )
 

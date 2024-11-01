@@ -4,7 +4,7 @@ import data.income.data as data
 import data.income.preproccessing as preproccessing
 import models.income.model_pipeline as model_pipeline
 import evaluations.racialBiasDetection as racialBiasDetection
-import postprocessing.postprocessing as postprocessing
+import postprocessing.classification.equalized_odds as equalized_odds
 import evaluations.racialBiasDetection as racialBiasDetection
 
 # All the parameters that are considered as independent variables/factors
@@ -37,8 +37,8 @@ pipeline.fit(X_train, y_train, X_test, y_test, data, X_test_indices)
 racialBiasDetection.evaluate_bias(X_test, y_test, model_pipeline.get_final_pred(), data, X_test_indices, 'race')
 
 # Evaluate the model with post-processing to ensure fairness
-postprocessing.equalize(data, pipeline, X_train, y_train, X_test, y_test, X_test_indices, X_train_indices, 'race')
+equalized_odds.equalize(data, pipeline, X_train, y_train, X_test, y_test, X_test_indices, X_train_indices, 'race')
 
 # Evaluate raical bias with this post-proccessing
 racialBiasDetection.evaluate_bias(X_test, y_test, 
-        postprocessing.get_y_pred_fixed(), data, X_test_indices, 'race')
+        equalized_odds.get_y_pred_fixed(), data, X_test_indices, 'race')

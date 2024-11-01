@@ -8,7 +8,7 @@ import data.recidivism.preproccessing as recidivism_preproccessing
 import data.violence.preproccessing as violence_preproccessing
 import models.recidivism.classification.model_pipeline as classification_model_pipeline
 import evaluations.racialBiasDetection as racialBiasDetection
-import postprocessing.postprocessing as postprocessing
+import postprocessing.classification.equalized_odds as equalized_odds
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 import numpy as np
@@ -635,10 +635,11 @@ racialBiasDetectionMulti.evaluate_bias(X_compas_violence_test, y_compas_violence
 # <<---------------------------------------------------------------------------------------------------->>
 # <<---------------------------------------------------------------------------------------------------->>
 
-# This is for classification of the severity of the Violence + Recidivism crime.
-# This is for classification of the severity of the Violence + Recidivism crime.
-# This is for classification of the severity of the Violence + Recidivism crime.
-# This is for classification of the severity of the Violence + Recidivism crime.
+# This is for classification of the time it takes for recidivism to occur again
+# This is for classification of the time it takes for recidivism to occur again
+# This is for classification of the time it takes for recidivism to occur again
+# This is for classification of the time it takes for recidivism to occur again
+
 import models.recidivism.date.model_pipeline as date_model_pipeline
 
 # 1. Convert date columns to datetime, ensuring proper format
