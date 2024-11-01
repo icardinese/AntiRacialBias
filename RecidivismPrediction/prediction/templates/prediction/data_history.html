@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Data History</title>
+</head>
+<body>
+    <h1>Data History</h1>
+    <ul>
+        {% for entry in history %}
+        <li>{{ entry.created_at }}: {{ entry.result }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
