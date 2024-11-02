@@ -350,3 +350,50 @@ plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 plt.show()
 
+
+# Assuming df_melted from previous steps
+
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=df_melted, x='Metric', y='Value', hue='Model', marker='o')
+plt.title('Model Performance Across Metrics')
+plt.ylabel('Percentage')
+plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.tight_layout()
+plt.show()
+
+# Assuming recidivism_group_metrics is already loaded
+
+# Calculate the difference between FNR and FPR
+recidivism_group_metrics['FNR - FPR'] = recidivism_group_metrics['False Negative Rate'] - recidivism_group_metrics['False Positive Rate']
+
+# Display the updated DataFrame
+recidivism_group_metrics.head()
+
+# Pivot the DataFrame
+heatmap_data = recidivism_group_metrics.pivot(index='Group', columns='Model', values='FNR - FPR')
+
+# Sort the groups for consistent ordering (optional)
+heatmap_data = heatmap_data.reindex(['African-American', 'Caucasian', 'Hispanic', 'Other', 'Native American', 'Asian'])
+
+# Display the pivoted DataFrame
+heatmap_data
+
+# Set up the matplotlib figure
+plt.figure(figsize=(12, 6))
+
+# Create a diverging colormap (e.g., blue for negative, red for positive differences)
+cmap = sns.diverging_palette(220, 20, as_cmap=True)
+
+# Plot the heatmap
+sns.heatmap(heatmap_data, annot=True, fmt=".3f", cmap=cmap, center=0, linewidths=.5, cbar_kws={'label': 'FNR - FPR'})
+
+# Customize the plot
+plt.title('Difference Between False Negative Rate and False Positive Rate\n(Recidivism Classification)')
+plt.ylabel('Demographic Group')
+plt.xlabel('Model')
+
+# Adjust layout for better fit
+plt.tight_layout()
+
+# Show the plot
+plt.show()
