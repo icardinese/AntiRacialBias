@@ -33,27 +33,29 @@ pip install -r requirements.txt
 link
   6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)\
 Example File Structure:\
-your_project/ \
-├── ai model 1\
-├── ai model 2\
-├── ai model 3\
+```
+your_project/ 
+├── ai model 1
+├── ai model 2
+├── ai model 3
 .\
 .\
 .\
-├── data\
-├── evaluations\
+├── data
+├── evaluations
 ├── figuresAndVisualsforResearch
+```
   8. Go into frontend and go into app.py\
 ```
-your_project/ \
+your_project/ 
 ├───frontend
 | └───__pycache__
 | ├───static
 | │   ├───images
 | │   └───reports
 | ├───templates
-| ├── app.py  <<------ Go here \
-| ├── forms.py \
+| ├── app.py  <<------ Go here 
+| ├── forms.py 
 | ├── model_pipeline.py
 ```
   10. Run app.py and in the terminal click on the link (cntrl + leftclick):
