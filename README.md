@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ```
   5. Now download the AI models by referring to this google drive link:
 link
-  6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)
+  6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)\n
 Example File Structure:
 your_project/
 ├── ai model 1
