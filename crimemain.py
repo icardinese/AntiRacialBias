@@ -34,6 +34,8 @@ X_violence = recidivismData[['age', 'juv_fel_count', 'juv_misd_count',
 y_recidivism_classification = recidivismData['is_recid']
 y_violence_classification = recidivismData['is_violent_recid']
 
+print(X_recidivism)
+
 # Split data for recidivism and violence classification
 X_recidivism_train, X_recidivism_test, y_recidivism_classification_train, y_recidivism_classification_test = train_test_split(
     X_recidivism, y_recidivism_classification, test_size=0.2, random_state=42)
@@ -92,7 +94,11 @@ race_recidivism_train_encoded = label_encoder.fit_transform(race_train)
 race_train = recidivismData['race'].loc[X_violence_train_indices].values
 race_violence_train_encoded = label_encoder.fit_transform(race_train)
 
-# Train recidivism pipeline without adversarial debiasing
+# # Train recidivism pipeline without adversarial debiasing
+# pipeline = classification_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_classification_train, X_recidivism_test, 
+#              y_recidivism_classification_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostRecidivismClassification')
+# pipeline.fit()
+# pipeline.predict()
 
 print("Recidivism prediction without adversarial debiasing")
 pipeline = classification_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_classification_train, X_recidivism_test, 
@@ -100,9 +106,11 @@ pipeline = classification_model_pipeline.CustomPipeline(X_recidivism_train, y_re
 pipeline.fit()
 pipeline.predict()
 
-# Evaluate bias for each racial group using false positives and false negatives
-racialBiasDetection.evaluate_bias(X_recidivism_test, y_recidivism_classification_test, pipeline.get_final_binary_pred(),
-                                   recidivismData, X_recidivism_test_indices, 'race')
+# # Violence classification pipeline without adversarial debiasing
+# pipelineviolence = classification_model_pipeline.CustomPipeline(X_violence_train, y_violence_classification_train, X_violence_test, 
+#              y_violence_classification_test, recidivismData, X_violence_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostViolenceClassification')
+# pipelineviolence.fit()
+# pipelineviolence.predict()
 
 print("Violence prediction without adversarial debiasing")
 # Violence classification pipeline without adversarial debiasing
@@ -111,9 +119,11 @@ pipelineviolence = classification_model_pipeline.CustomPipeline(X_violence_train
 pipelineviolence.fit()
 pipelineviolence.predict()
 
-# Evaluate bias for violence
-racialBiasDetection.evaluate_bias(X_violence_test, y_violence_classification_test, pipeline.get_final_binary_pred(),
-                                   recidivismData, X_violence_test_indices, 'race')
+# # Recidivism pipeline with adversarial debiasing
+# pipelineadversarial = classification_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_classification_train, X_recidivism_test, 
+#              y_recidivism_classification_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=True, training_name='adversarialNoPostRecidivismClassification')
+# pipelineadversarial.fit(race_train=race_recidivism_train_encoded)
+# pipelineadversarial.predict()
 
 print("Recedivism prediction with adversarial debiasing")
 # Recidivism pipeline with adversarial debiasing
@@ -122,9 +132,11 @@ pipelineadversarial = classification_model_pipeline.CustomPipeline(X_recidivism_
 pipelineadversarial.fit(race_train=race_recidivism_train_encoded)
 pipelineadversarial.predict()
 
-# Evaluate bias for each racial group using false positives and false negatives (adversarial)
-racialBiasDetection.evaluate_bias(X_recidivism_test, y_recidivism_classification_test, pipelineadversarial.get_final_binary_pred(),
-                                   recidivismData, X_recidivism_test_indices, 'race')
+# # Violence classification with adversarial debiasing
+# pipelineadversarialviolence = classification_model_pipeline.CustomPipeline(X_violence_train, y_violence_classification_train, X_violence_test, 
+#              y_violence_classification_test, recidivismData, X_violence_test_indices, 'race', adversarial=True, training_name='adversarialNoPostViolenceClassification')
+# pipelineadversarialviolence.fit(race_train=race_violence_train_encoded)
+# pipelineadversarialviolence.predict()
 
 print("Violence prediction with adversarial debiasing")
 # Violence classification with adversarial debiasing
@@ -194,9 +206,9 @@ y_compas_violence_classification_train = y_compas_violence_classification_train.
 y_compas_violence_classification_test = y_compas_violence_classification_test.loc[X_compas_violence_test_indices]
 
 
-# Recidivism classification pipeline using COMPAS data without adversarial debiasing
-pipeline_compas_recidivism = classification_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compas_recidivism_classification_train, 
-    X_compas_recidivism_test, y_compas_recidivism_classification_test, recidivismData, X_compas_recidivism_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostTrainedCompasRecidivismClassification')
+# # Recidivism classification pipeline using COMPAS data without adversarial debiasing
+# pipeline_compas_recidivism = classification_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compas_recidivism_classification_train, 
+#     X_compas_recidivism_test, y_compas_recidivism_classification_test, recidivismData, X_compas_recidivism_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostTrainedCompasRecidivismClassification')
 
 print("Compas Recedivism prediction without adversarial debiasing")
 pipeline_compas_recidivism.fit()
@@ -206,10 +218,10 @@ pipeline_compas_recidivism.predict()
 racialBiasDetection.evaluate_bias(X_compas_recidivism_test, y_compas_recidivism_classification_test, 
     pipeline_compas_recidivism.get_final_binary_pred(), recidivismData, X_compas_recidivism_test_indices, 'race')
 
-# Violence classification pipeline using COMPAS data without adversarial debiasing
-pipeline_compas_violence = classification_model_pipeline.CustomPipeline(X_compas_violence_train, y_compas_violence_classification_train, 
-    X_compas_violence_test, y_compas_violence_classification_test, recidivismData, X_compas_violence_test_indices, 'race', adversarial=False,
-    training_name='noAdversarialNoPostTrainedCompasViolenceClassification')
+# # Violence classification pipeline using COMPAS data without adversarial debiasing
+# pipeline_compas_violence = classification_model_pipeline.CustomPipeline(X_compas_violence_train, y_compas_violence_classification_train, 
+#     X_compas_violence_test, y_compas_violence_classification_test, recidivismData, X_compas_violence_test_indices, 'race', adversarial=False,
+#     training_name='noAdversarialNoPostTrainedCompasViolenceClassification')
 
 print("Compas Violence prediction with adversarial debiasing")
 pipeline_compas_violence.fit()
@@ -271,357 +283,351 @@ racialBiasDetection.evaluate_bias(X_compas_violence_test, y_compas_violence_clas
 # <<---------------------------------------------------------------------------------------------------->>
 
 # This is for classification of the severity of the Violence + Recidivism crime.
-import models.recidivism.severity.model_pipeline as severity_model_pipeline
-import evaluations.racialBiasDetectionMulti as racialBiasDetectionMulti
+# import models.recidivism.severity.model_pipeline as severity_model_pipeline
+# import evaluations.racialBiasDetectionMulti as racialBiasDetectionMulti
 
-X_recidivism = recidivismData[['age', 'juv_fel_count', 'juv_misd_count', 
-                               'juv_other_count', 'priors_count', 
-                               'days_b_screening_arrest', 'c_days_from_compas', 
-                               'sex', 'race', 'score_text', 'decile_score',
-                               'c_charge_degree']]
-X_violence = recidivismData[['age', 'juv_fel_count', 'juv_misd_count', 
-                               'juv_other_count', 'priors_count', 
-                               'days_b_screening_arrest', 'c_days_from_compas', 
-                               'sex', 'race', 'v_score_text', 'v_decile_score',
-                               'c_charge_degree']]
+# X_recidivism = recidivismData[['age', 'juv_fel_count', 'juv_misd_count', 
+#                                'juv_other_count', 'priors_count', 
+#                                'days_b_screening_arrest', 'c_days_from_compas', 
+#                                'sex', 'race', 'score_text', 'decile_score',
+#                                'c_charge_degree']]
+# X_violence = recidivismData[['age', 'juv_fel_count', 'juv_misd_count', 
+#                                'juv_other_count', 'priors_count', 
+#                                'days_b_screening_arrest', 'c_days_from_compas', 
+#                                'sex', 'race', 'v_score_text', 'v_decile_score',
+#                                'c_charge_degree']]
 
-y_recidivism_severity = recidivismData['r_charge_degree']
-y_violence_severity = recidivismData['vr_charge_degree']
+# y_recidivism_severity = recidivismData['r_charge_degree']
+# y_violence_severity = recidivismData['vr_charge_degree']
 
-# Define the static severity mapping without CO3 (since we are removing it)
-severity_mapping = {'(F1)': 7, '(F2)': 6, '(F3)': 5, '(F6)': 4, '(F7)': 3, '(M1)': 2, '(M2)': 1, '(MO3)': 0}
+# # Define the static severity mapping without CO3 (since we are removing it)
+# severity_mapping = {'(F1)': 7, '(F2)': 6, '(F3)': 5, '(F6)': 4, '(F7)': 3, '(M1)': 2, '(M2)': 1, '(MO3)': 0}
 
 
-# Filter out 'CO3' rows from both datasets
-y_recidivism_severity = y_recidivism_severity[y_recidivism_severity != '(CO3)']
-y_violence_severity = y_violence_severity[y_violence_severity != '(CO3)']
+# # Filter out 'CO3' rows from both datasets
+# y_recidivism_severity = y_recidivism_severity[y_recidivism_severity != '(CO3)']
+# y_violence_severity = y_violence_severity[y_violence_severity != '(CO3)']
 
-# Ensure X has matching indices after filtering out CO3 from y
-X_recidivism = X_recidivism.loc[y_recidivism_severity.index]
-X_violence = X_violence.loc[y_violence_severity.index]
+# # Ensure X has matching indices after filtering out CO3 from y
+# X_recidivism = X_recidivism.loc[y_recidivism_severity.index]
+# X_violence = X_violence.loc[y_violence_severity.index]
 
-# Apply the severity mapping to the filtered data
-y_recidivism_severity = y_recidivism_severity.map(severity_mapping)
-y_violence_severity = y_violence_severity.map(severity_mapping)
+# # Apply the severity mapping to the filtered data
+# y_recidivism_severity = y_recidivism_severity.map(severity_mapping)
+# y_violence_severity = y_violence_severity.map(severity_mapping)
 
-# Drop NaN values in case of any missing mappings
-y_recidivism_severity = y_recidivism_severity.dropna().astype(int)
-y_violence_severity = y_violence_severity.dropna().astype(int)
+# # Drop NaN values in case of any missing mappings
+# y_recidivism_severity = y_recidivism_severity.dropna().astype(int)
+# y_violence_severity = y_violence_severity.dropna().astype(int)
 
-X_recidivism = X_recidivism.loc[y_recidivism_severity.index]
-X_violence = X_violence.loc[y_violence_severity.index]
+# X_recidivism = X_recidivism.loc[y_recidivism_severity.index]
+# X_violence = X_violence.loc[y_violence_severity.index]
 
-# Continue with your XGBoost model training
-# y_recidivism_severity and y_violence_severity now contain the integer values [0, 1, 2, ..., 8]
-# Map the target values (severity labels) using the predefined severity mapping
+# # Continue with your XGBoost model training
+# # y_recidivism_severity and y_violence_severity now contain the integer values [0, 1, 2, ..., 8]
+# # Map the target values (severity labels) using the predefined severity mapping
 
-# Split data for recidivism and violence classification
-X_recidivism_train, X_recidivism_test, y_recidivism_severity_train, y_recidivism_severity_test = train_test_split(
-    X_recidivism, y_recidivism_severity, test_size=0.2, random_state=42)
-X_violence_train, X_violence_test, y_violence_severity_train, y_violence_severity_test = train_test_split(
-    X_violence, y_violence_severity, test_size=0.2, random_state=42)
+# # Split data for recidivism and violence classification
+# X_recidivism_train, X_recidivism_test, y_recidivism_severity_train, y_recidivism_severity_test = train_test_split(
+#     X_recidivism, y_recidivism_severity, test_size=0.2, random_state=42)
+# X_violence_train, X_violence_test, y_violence_severity_train, y_violence_severity_test = train_test_split(
+#     X_violence, y_violence_severity, test_size=0.2, random_state=42)
 
-# <<<<<<<<<<<< XGBoost missing classification value handling >>>>>>>>>>>>>>>>>>
+# # <<<<<<<<<<<< XGBoost missing classification value handling >>>>>>>>>>>>>>>>>>
 
-# Now, handle missing classes only in the training set.
-# Ensure all classes are present in the target variable for XGBoost
+# # Now, handle missing classes only in the training set.
+# # Ensure all classes are present in the target variable for XGBoost
 
-all_classes_recidivism = set(range(8))  # Classes expected: 0 to 6
-all_classes_violence = set(range(8))  # Same for violence data
+# all_classes_recidivism = set(range(8))  # Classes expected: 0 to 6
+# all_classes_violence = set(range(8))  # Same for violence data
 
-# Identify present classes in the training data
-present_classes_recidivism = set(y_recidivism_severity_train.unique())
-present_classes_violence = set(y_violence_severity_train.unique())
+# # Identify present classes in the training data
+# present_classes_recidivism = set(y_recidivism_severity_train.unique())
+# present_classes_violence = set(y_violence_severity_train.unique())
 
-# Find missing classes
-missing_classes_recidivism = all_classes_recidivism - present_classes_recidivism
-missing_classes_violence = all_classes_violence - present_classes_violence
+# # Find missing classes
+# missing_classes_recidivism = all_classes_recidivism - present_classes_recidivism
+# missing_classes_violence = all_classes_violence - present_classes_violence
 
-# If there are missing classes, artificially add them to the training set
-if missing_classes_recidivism:
-    # Add "fake" data points for the missing recidivism classes
-    fake_X_recidivism = [X_recidivism_train[0]] * len(missing_classes_recidivism)  # Duplicate the first row
-    fake_y_recidivism = list(missing_classes_recidivism)
+# # If there are missing classes, artificially add them to the training set
+# if missing_classes_recidivism:
+#     # Add "fake" data points for the missing recidivism classes
+#     fake_X_recidivism = [X_recidivism_train[0]] * len(missing_classes_recidivism)  # Duplicate the first row
+#     fake_y_recidivism = list(missing_classes_recidivism)
     
-    # Add to the training set
-    X_recidivism_train = pd.concat([pd.DataFrame(X_recidivism_train), pd.DataFrame(fake_X_recidivism)], ignore_index=True)
-    y_recidivism_severity_train = pd.concat([pd.Series(y_recidivism_severity_train), pd.Series(fake_y_recidivism)], ignore_index=True)
+#     # Add to the training set
+#     X_recidivism_train = pd.concat([pd.DataFrame(X_recidivism_train), pd.DataFrame(fake_X_recidivism)], ignore_index=True)
+#     y_recidivism_severity_train = pd.concat([pd.Series(y_recidivism_severity_train), pd.Series(fake_y_recidivism)], ignore_index=True)
 
-if missing_classes_violence:
-    # Add "fake" data points for the missing violence classes
-    fake_X_violence = [X_violence_train[0]] * len(missing_classes_violence)  # Duplicate the first row
-    fake_y_violence = list(missing_classes_violence)
+# if missing_classes_violence:
+#     # Add "fake" data points for the missing violence classes
+#     fake_X_violence = [X_violence_train[0]] * len(missing_classes_violence)  # Duplicate the first row
+#     fake_y_violence = list(missing_classes_violence)
     
-    # Add to the training set
-    X_violence_train = pd.concat([pd.DataFrame(X_violence_train), pd.DataFrame(fake_X_violence)], ignore_index=True)
-    y_violence_severity_train = pd.concat([pd.Series(y_violence_severity_train), pd.Series(fake_y_violence)], ignore_index=True)
-
-# <<<<<<<<<<< END OF XGBoost classification handling! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-# Conserves the original dataset indexes before transforming it
-X_recidivism_test_indices = X_recidivism_test.index
-X_recidivism_train_indices = X_recidivism_train.index
-X_violence_test_indices = X_violence_test.index
-X_violence_train_indices = X_violence_train.index
-
-y_recidivism_severity_test_indices = y_recidivism_severity_test.index
-y_recidivism_severity_train_indices = y_recidivism_severity_train.index
-y_violence_severity_test_indices = y_violence_severity_test.index
-y_violence_severity_train_indices = y_violence_severity_train.index
-
-# Preprocess the data for the original recidivism pipeline
-X_recidivism_train, X_recidivism_test = recidivism_preproccessing.preprocessor(X_recidivism_train, X_recidivism_test)
-X_violence_train, X_violence_test = violence_preproccessing.preprocessor(X_violence_train, X_violence_test)
-
-# Convert to DataFrame to drop rows with NaN values
-X_recidivism_train_df = pd.DataFrame(X_recidivism_train, index=X_recidivism_train_indices)
-X_recidivism_test_df = pd.DataFrame(X_recidivism_test, index=X_recidivism_test_indices)
-X_violence_train_df = pd.DataFrame(X_violence_train, index=X_violence_train_indices)
-X_violence_test_df = pd.DataFrame(X_violence_test, index=X_violence_test_indices)
-
-y_recidivism_severity_train_df = pd.DataFrame(y_recidivism_severity_train, index=y_recidivism_severity_train_indices)
-y_recidivism_severity_test_df = pd.DataFrame(y_recidivism_severity_test, index=y_recidivism_severity_test_indices)
-y_violence_severity_train_df = pd.DataFrame(y_violence_severity_train, index=y_violence_severity_train_indices)
-y_violence_severity_test_df = pd.DataFrame(y_violence_severity_test, index=y_violence_severity_test_indices)
-
-# Drop rows with NaN values in y and update X accordingly
-y_recidivism_severity_train_df.dropna(inplace=True)
-X_recidivism_train_df = X_recidivism_train_df.loc[y_recidivism_severity_train_df.index]
-
-y_recidivism_severity_test_df.dropna(inplace=True)
-X_recidivism_test_df = X_recidivism_test_df.loc[y_recidivism_severity_test_df.index]
-
-y_violence_severity_train_df.dropna(inplace=True)
-X_violence_train_df = X_violence_train_df.loc[y_violence_severity_train_df.index]
-
-y_violence_severity_test_df.dropna(inplace=True)
-X_violence_test_df = X_violence_test_df.loc[y_violence_severity_test_df.index]
-
-# Drop rows with NaN values in X and update y accordingly
-X_recidivism_train_df.dropna(inplace=True)
-y_recidivism_severity_train_df = y_recidivism_severity_train_df.loc[X_recidivism_train_df.index]
-
-X_recidivism_test_df.dropna(inplace=True)
-y_recidivism_severity_test_df = y_recidivism_severity_test_df.loc[X_recidivism_test_df.index]
-
-X_violence_train_df.dropna(inplace=True)
-y_violence_severity_train_df = y_violence_severity_train_df.loc[X_violence_train_df.index]
-
-X_violence_test_df.dropna(inplace=True)
-y_violence_severity_test_df = y_violence_severity_test_df.loc[X_violence_test_df.index]
-
-# Convert DataFrame back to NumPy arrays
-X_recidivism_train = X_recidivism_train_df.values
-X_recidivism_test = X_recidivism_test_df.values
-X_violence_train = X_violence_train_df.values
-X_violence_test = X_violence_test_df.values
-
-X_recidivism_train_indices = X_recidivism_train_df.index
-X_recidivism_test_indices = X_recidivism_test_df.index
-X_violence_train_indices = X_violence_train_df.index
-X_violence_test_indices = X_violence_test_df.index
+#     # Add to the training set
+#     X_violence_train = pd.concat([pd.DataFrame(X_violence_train), pd.DataFrame(fake_X_violence)], ignore_index=True)
+#     y_violence_severity_train = pd.concat([pd.Series(y_violence_severity_train), pd.Series(fake_y_violence)], ignore_index=True)
+
+# # <<<<<<<<<<< END OF XGBoost classification handling! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+# # Conserves the original dataset indexes before transforming it
+# X_recidivism_test_indices = X_recidivism_test.index
+# X_recidivism_train_indices = X_recidivism_train.index
+# X_violence_test_indices = X_violence_test.index
+# X_violence_train_indices = X_violence_train.index
+
+# y_recidivism_severity_test_indices = y_recidivism_severity_test.index
+# y_recidivism_severity_train_indices = y_recidivism_severity_train.index
+# y_violence_severity_test_indices = y_violence_severity_test.index
+# y_violence_severity_train_indices = y_violence_severity_train.index
+
+# # Preprocess the data for the original recidivism pipeline
+# X_recidivism_train, X_recidivism_test = recidivism_preproccessing.preprocessor(X_recidivism_train, X_recidivism_test)
+# X_violence_train, X_violence_test = violence_preproccessing.preprocessor(X_violence_train, X_violence_test)
+
+# # Convert to DataFrame to drop rows with NaN values
+# X_recidivism_train_df = pd.DataFrame(X_recidivism_train, index=X_recidivism_train_indices)
+# X_recidivism_test_df = pd.DataFrame(X_recidivism_test, index=X_recidivism_test_indices)
+# X_violence_train_df = pd.DataFrame(X_violence_train, index=X_violence_train_indices)
+# X_violence_test_df = pd.DataFrame(X_violence_test, index=X_violence_test_indices)
+
+# y_recidivism_severity_train_df = pd.DataFrame(y_recidivism_severity_train, index=y_recidivism_severity_train_indices)
+# y_recidivism_severity_test_df = pd.DataFrame(y_recidivism_severity_test, index=y_recidivism_severity_test_indices)
+# y_violence_severity_train_df = pd.DataFrame(y_violence_severity_train, index=y_violence_severity_train_indices)
+# y_violence_severity_test_df = pd.DataFrame(y_violence_severity_test, index=y_violence_severity_test_indices)
+
+# # Drop rows with NaN values in y and update X accordingly
+# y_recidivism_severity_train_df.dropna(inplace=True)
+# X_recidivism_train_df = X_recidivism_train_df.loc[y_recidivism_severity_train_df.index]
+
+# y_recidivism_severity_test_df.dropna(inplace=True)
+# X_recidivism_test_df = X_recidivism_test_df.loc[y_recidivism_severity_test_df.index]
+
+# y_violence_severity_train_df.dropna(inplace=True)
+# X_violence_train_df = X_violence_train_df.loc[y_violence_severity_train_df.index]
+
+# y_violence_severity_test_df.dropna(inplace=True)
+# X_violence_test_df = X_violence_test_df.loc[y_violence_severity_test_df.index]
 
-y_recidivism_severity_train = y_recidivism_severity_train_df.values.ravel()
-y_recidivism_severity_test = y_recidivism_severity_test_df.values.ravel()
-y_violence_severity_train = y_violence_severity_train_df.values.ravel()
-y_violence_severity_test = y_violence_severity_test_df.values.ravel()
-
-
-# Label encode the 'race' column for adversarial debiasing
-label_encoder = LabelEncoder()
-
-# Recidivism 
-race_train = recidivismData['race'].loc[X_recidivism_train_indices].values
-race_recidivism_train_encoded = label_encoder.fit_transform(race_train)
-
-# Violence
-race_train = recidivismData['race'].loc[X_violence_train_indices].values
-race_violence_train_encoded = label_encoder.fit_transform(race_train)
-
-print("Recedivism misdeamonor level prediction without adversarial debiasing")
-# Train recidivism pipeline without adversarial debiasing
-pipeline = severity_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_severity_train, X_recidivism_test, 
-             y_recidivism_severity_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostRecidivismSeverity')
-pipeline.fit()
-pipeline.predict()
-
-# Evaluate bias for each racial group using false positives and false negatives
-racialBiasDetectionMulti.evaluate_bias(X_recidivism_test, y_recidivism_severity_test, pipeline.get_final_pred(),
-                                   recidivismData, X_recidivism_test_indices, 'race')
-
-print("Violence misdeamonor level prediction without adversarial debiasing")
-# Violence classification pipeline without adversarial debiasing
-pipelineviolence = severity_model_pipeline.CustomPipeline(X_violence_train, y_violence_severity_train, X_violence_test, 
-             y_violence_severity_test, recidivismData, X_violence_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostViolenceSeverity')
-pipelineviolence.fit()
-pipelineviolence.predict()
-
-# Evaluate bias for violence
-racialBiasDetectionMulti.evaluate_bias(X_violence_test, y_violence_severity_test, pipeline.get_final_pred(),
-                                   recidivismData, X_violence_test_indices, 'race')
+# # Drop rows with NaN values in X and update y accordingly
+# X_recidivism_train_df.dropna(inplace=True)
+# y_recidivism_severity_train_df = y_recidivism_severity_train_df.loc[X_recidivism_train_df.index]
 
-print("Recedivism misdeamonor level prediction with adversarial debiasing")
-# Recidivism pipeline with adversarial debiasing
-pipelineadversarial = severity_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_severity_train, X_recidivism_test, 
-             y_recidivism_severity_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=True, training_name='adversarialNoPostRecidivismSeverity')
-pipelineadversarial.fit(race_train=race_recidivism_train_encoded)
-pipelineadversarial.predict()
+# X_recidivism_test_df.dropna(inplace=True)
+# y_recidivism_severity_test_df = y_recidivism_severity_test_df.loc[X_recidivism_test_df.index]
+
+# X_violence_train_df.dropna(inplace=True)
+# y_violence_severity_train_df = y_violence_severity_train_df.loc[X_violence_train_df.index]
+
+# X_violence_test_df.dropna(inplace=True)
+# y_violence_severity_test_df = y_violence_severity_test_df.loc[X_violence_test_df.index]
+
+# # Convert DataFrame back to NumPy arrays
+# X_recidivism_train = X_recidivism_train_df.values
+# X_recidivism_test = X_recidivism_test_df.values
+# X_violence_train = X_violence_train_df.values
+# X_violence_test = X_violence_test_df.values
 
-# Evaluate bias for each racial group using false positives and false negatives (adversarial)
-racialBiasDetectionMulti.evaluate_bias(X_recidivism_test, y_recidivism_severity_test, pipelineadversarial.get_final_pred(),
-                                   recidivismData, X_recidivism_test_indices, 'race')
+# X_recidivism_train_indices = X_recidivism_train_df.index
+# X_recidivism_test_indices = X_recidivism_test_df.index
+# X_violence_train_indices = X_violence_train_df.index
+# X_violence_test_indices = X_violence_test_df.index
 
-print("Violence misdeamonor level prediction without adversarial debiasing")
-# Violence classification with adversarial debiasing
-pipelineadversarialviolence = severity_model_pipeline.CustomPipeline(X_violence_train, y_violence_severity_train, X_violence_test, 
-             y_violence_severity_test, recidivismData, X_violence_test_indices, 'race', adversarial=True, training_name='adversarialNoPostViolenceSeverity')
-pipelineadversarialviolence.fit(race_train=race_violence_train_encoded)
-pipelineadversarialviolence.predict()
-
-# Evaluate bias for violence (adversarial)
-racialBiasDetectionMulti.evaluate_bias(X_violence_test, y_violence_severity_test, pipelineadversarialviolence.get_final_pred(),
-                                   recidivismData, X_violence_test_indices, 'race')
-
-# # <<----------------------- COMPAS Implementation for Comparison ---------------------->>
+# y_recidivism_severity_train = y_recidivism_severity_train_df.values.ravel()
+# y_recidivism_severity_test = y_recidivism_severity_test_df.values.ravel()
+# y_violence_severity_train = y_violence_severity_train_df.values.ravel()
+# y_violence_severity_test = y_violence_severity_test_df.values.ravel()
+
 
-# Use only the decile_score and score_text for COMPAS processing
-X_compas_recidivism = recidivismData[['decile_score', 'score_text']]
-
-# Split data for recidivism classification
-X_compas_violence = recidivismData[['v_decile_score', 'v_score_text']]
-y_recidivism_severity = recidivismData['r_charge_degree']
-y_violence_severity = recidivismData['vr_charge_degree']
-
-# Define the static severity mapping without CO3 (since we are removing it)
-severity_mapping = {'(F1)': 7, '(F2)': 6, '(F3)': 5, '(F6)': 4, '(F7)': 3, '(M1)': 2, '(M2)': 1, '(MO3)': 0}
-
-
-# Filter out 'CO3' rows from both datasets
-y_recidivism_severity = y_recidivism_severity[y_recidivism_severity != '(CO3)']
-y_violence_severity = y_violence_severity[y_violence_severity != '(CO3)']
-
-# Ensure X has matching indices after filtering out CO3 from y
-X_compas_recidivism = X_compas_recidivism.loc[y_recidivism_severity.index]
-X_compas_violence = X_compas_violence.loc[y_violence_severity.index]
-
-# Apply the severity mapping to the filtered data
-y_recidivism_severity = y_recidivism_severity.map(severity_mapping)
-y_violence_severity = y_violence_severity.map(severity_mapping)
-
-# Drop NaN values in case of any missing mappings
-y_recidivism_severity = y_recidivism_severity.dropna().astype(int)
-y_violence_severity = y_violence_severity.dropna().astype(int)
-
-X_compas_recidivism = X_compas_recidivism.loc[y_recidivism_severity.index]
-X_compas_violence = X_compas_violence.loc[y_violence_severity.index]
-
-
-# Split data for recidivism classification
-X_compas_recidivism_train, X_compas_recidivism_test, y_compas_recidivism_severity_train, y_compas_recidivism_severity_test = train_test_split(
-    X_compas_recidivism, y_recidivism_severity, test_size=0.2, random_state=42)
-
-# Split data for violence classification
-X_compas_violence_train, X_compas_violence_test, y_compas_violence_severity_train, y_compas_violence_severity_test = train_test_split(
-    X_compas_violence, y_violence_severity, test_size=0.2, random_state=42)
-
-# Conserves the original dataset indexes before transforming it
-X_compas_recidivism_test_indices = X_compas_recidivism_test.index
-X_compas_recidivism_train_indices = X_compas_recidivism_train.index
-X_compas_violence_test_indices = X_compas_violence_test.index
-X_compas_violence_train_indices = X_compas_violence_train.index
-
-y_compas_recidivism_severity_test_indices = y_compas_recidivism_severity_test.index
-y_compas_recidivism_severity_train_indices = y_compas_recidivism_severity_train.index
-y_compas_violence_severity_test_indices = y_compas_violence_severity_test.index
-y_compas_violence_severity_train_indices = y_compas_violence_severity_train.index
-
-# Convert to DataFrame to drop rows with NaN values
-X_compas_recidivism_train_df = pd.DataFrame(X_compas_recidivism_train, index=X_compas_recidivism_train_indices)
-X_compas_recidivism_test_df = pd.DataFrame(X_compas_recidivism_test, index=X_compas_recidivism_test_indices)
-X_compas_violence_train_df = pd.DataFrame(X_compas_violence_train, index=X_compas_violence_train_indices)
-X_compas_violence_test_df = pd.DataFrame(X_compas_violence_test, index=X_compas_violence_test_indices)
-
-y_compas_recidivism_severity_train_df = pd.DataFrame(y_compas_recidivism_severity_train, index=y_recidivism_severity_train_indices)
-y_compas_recidivism_severity_test_df = pd.DataFrame(y_compas_recidivism_severity_test, index=y_recidivism_severity_test_indices)
-y_compas_violence_severity_train_df = pd.DataFrame(y_compas_violence_severity_train, index=y_violence_severity_train_indices)
-y_compas_violence_severity_test_df = pd.DataFrame(y_compas_violence_severity_test, index=y_violence_severity_test_indices)
-
-# Drop rows with NaN values in y and update X accordingly
-y_compas_recidivism_severity_train_df.dropna(inplace=True)
-X_compas_recidivism_train_df = X_compas_recidivism_train_df.loc[y_compas_recidivism_severity_train_df.index]
-
-y_compas_recidivism_severity_test_df.dropna(inplace=True)
-X_compas_recidivism_test_df = X_compas_recidivism_test_df.loc[y_compas_recidivism_severity_test_df.index]
-
-y_compas_violence_severity_train_df.dropna(inplace=True)
-X_compas_violence_train_df = X_compas_violence_train_df.loc[y_compas_violence_severity_train_df.index]
-
-y_compas_violence_severity_test_df.dropna(inplace=True)
-X_compas_violence_test_df = X_compas_violence_test_df.loc[y_compas_violence_severity_test_df.index]
-
-# Drop rows with NaN values in X and update y accordingly
-X_compas_recidivism_train_df.dropna(inplace=True)
-y_compas_recidivism_severity_train_df = y_compas_recidivism_severity_train_df.loc[X_compas_recidivism_train_df.index]
-
-X_compas_recidivism_test_df.dropna(inplace=True)
-y_compas_recidivism_severity_test_df = y_compas_recidivism_severity_test_df.loc[X_compas_recidivism_test_df.index]
-
-X_compas_violence_train_df.dropna(inplace=True)
-y_compas_violence_severity_train_df = y_compas_violence_severity_train_df.loc[X_compas_violence_train_df.index]
-
-X_compas_violence_test_df.dropna(inplace=True)
-y_compas_violence_severity_test_df = y_compas_violence_severity_test_df.loc[X_compas_violence_test_df.index]
-
-# Convert DataFrame back to NumPy arrays
-X_compas_recidivism_train = X_compas_recidivism_train_df
-X_compas_recidivism_test = X_compas_recidivism_test_df
-X_compas_violence_train = X_compas_violence_train_df
-X_compas_violence_test = X_compas_violence_test_df
-
-y_compas_recidivism_severity_train = y_compas_recidivism_severity_train_df.values.ravel()
-y_compas_recidivism_severity_test = y_compas_recidivism_severity_test_df.values.ravel()
-y_compas_violence_severity_train = y_compas_violence_severity_train_df.values.ravel()
-y_compas_violence_severity_test = y_compas_violence_severity_test_df.values.ravel()
-
-X_compas_recidivism_train = X_compas_recidivism_train_df
-X_compas_recidivism_test = X_compas_recidivism_test_df
-X_compas_violence_train = X_compas_violence_train_df
-X_compas_violence_test = X_compas_violence_test_df
-
-X_compas_recidivism_test_indices = X_compas_recidivism_test.index
-X_compas_recidivism_train_indices = X_compas_recidivism_train.index
-X_compas_violence_test_indices = X_compas_violence_test.index
-X_compas_violence_train_indices = X_compas_violence_train.index
-
-# Preprocess the data for the original recidivism pipeline
-X_compas_recidivism_train, X_compas_recidivism_test = recidivism_compass_preproccessing.preprocessor(X_compas_recidivism_train, X_compas_recidivism_test)
-X_compas_violence_train, X_compas_violence_test = violence_compass_preproccessing.preprocessor(X_compas_violence_train, X_compas_violence_test)
-
-# Recidivism classification pipeline using COMPAS data without adversarial debiasing
-pipeline_compas_recidivism = severity_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compas_recidivism_severity_train, 
-    X_compas_recidivism_test, y_compas_recidivism_severity_test, recidivismData, X_compas_recidivism_test_indices, 'race', adversarial=False, 
-    training_name='noAdversarialNoPostTrainedCompasRecidivismSeverity')
-
-print("Compas misdeamonor level prediction without adversarial debiasing")
-pipeline_compas_recidivism.fit()
-pipeline_compas_recidivism.predict()
-
-# Evaluate bias for each racial group using COMPAS data for recidivism
-racialBiasDetectionMulti.evaluate_bias(X_compas_recidivism_test, y_compas_recidivism_severity_test, 
-    pipeline_compas_recidivism.get_final_pred(), recidivismData, X_compas_recidivism_test_indices, 'race')
-
-print("Compas violence level prediction without adversarial debiasing")
-# Violence classification pipeline using COMPAS data without adversarial debiasing
-pipeline_compas_violence = severity_model_pipeline.CustomPipeline(X_compas_violence_train, y_compas_violence_severity_train, 
-    X_compas_violence_test, y_compas_violence_severity_test, recidivismData, X_compas_violence_test_indices, 'race', adversarial=False,
-    training_name='noAdversarialNoPostTrainedCompasViolenceSeverity')
-
-pipeline_compas_violence.fit()
-pipeline_compas_violence.predict()
-
-# Evaluate bias for each racial group using COMPAS data for violence
-racialBiasDetectionMulti.evaluate_bias(X_compas_violence_test, y_compas_violence_severity_test, 
-    pipeline_compas_violence.get_final_pred(), recidivismData, X_compas_violence_test_indices, 'race')
+# # Label encode the 'race' column for adversarial debiasing
+# label_encoder = LabelEncoder()
+
+# # Recidivism 
+# race_train = recidivismData['race'].loc[X_recidivism_train_indices].values
+# race_recidivism_train_encoded = label_encoder.fit_transform(race_train)
+
+# # Violence
+# race_train = recidivismData['race'].loc[X_violence_train_indices].values
+# race_violence_train_encoded = label_encoder.fit_transform(race_train)
+
+# # Train recidivism pipeline without adversarial debiasing
+# pipeline = severity_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_severity_train, X_recidivism_test, 
+#              y_recidivism_severity_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostRecidivismSeverity')
+# pipeline.fit()
+# pipeline.predict()
+
+# # Evaluate bias for each racial group using false positives and false negatives
+# racialBiasDetectionMulti.evaluate_bias(X_recidivism_test, y_recidivism_severity_test, pipeline.get_final_pred(),
+#                                    recidivismData, X_recidivism_test_indices, 'race')
+
+# # Violence classification pipeline without adversarial debiasing
+# pipelineviolence = severity_model_pipeline.CustomPipeline(X_violence_train, y_violence_severity_train, X_violence_test, 
+#              y_violence_severity_test, recidivismData, X_violence_test_indices, 'race', adversarial=False, training_name='noAdversarialNoPostViolenceSeverity')
+# pipelineviolence.fit()
+# pipelineviolence.predict()
+
+# # Evaluate bias for violence
+# racialBiasDetectionMulti.evaluate_bias(X_violence_test, y_violence_severity_test, pipeline.get_final_pred(),
+#                                    recidivismData, X_violence_test_indices, 'race')
+
+# # Recidivism pipeline with adversarial debiasing
+# pipelineadversarial = severity_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_severity_train, X_recidivism_test, 
+#              y_recidivism_severity_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=True, training_name='adversarialNoPostRecidivismSeverity')
+# pipelineadversarial.fit(race_train=race_recidivism_train_encoded)
+# pipelineadversarial.predict()
+
+# # Evaluate bias for each racial group using false positives and false negatives (adversarial)
+# racialBiasDetectionMulti.evaluate_bias(X_recidivism_test, y_recidivism_severity_test, pipelineadversarial.get_final_pred(),
+#                                    recidivismData, X_recidivism_test_indices, 'race')
+
+# # Violence classification with adversarial debiasing
+# pipelineadversarialviolence = severity_model_pipeline.CustomPipeline(X_violence_train, y_violence_severity_train, X_violence_test, 
+#              y_violence_severity_test, recidivismData, X_violence_test_indices, 'race', adversarial=True, training_name='adversarialNoPostViolenceSeverity')
+# pipelineadversarialviolence.fit(race_train=race_violence_train_encoded)
+# pipelineadversarialviolence.predict()
+
+# # Evaluate bias for violence (adversarial)
+# racialBiasDetectionMulti.evaluate_bias(X_violence_test, y_violence_severity_test, pipelineadversarialviolence.get_final_pred(),
+#                                    recidivismData, X_violence_test_indices, 'race')
+
+# # # <<----------------------- COMPAS Implementation for Comparison ---------------------->>
+
+# # Use only the decile_score and score_text for COMPAS processing
+# X_compas_recidivism = recidivismData[['decile_score', 'score_text']]
+
+# # Split data for recidivism classification
+# X_compas_violence = recidivismData[['v_decile_score', 'v_score_text']]
+# y_recidivism_severity = recidivismData['r_charge_degree']
+# y_violence_severity = recidivismData['vr_charge_degree']
+
+# # Define the static severity mapping without CO3 (since we are removing it)
+# severity_mapping = {'(F1)': 7, '(F2)': 6, '(F3)': 5, '(F6)': 4, '(F7)': 3, '(M1)': 2, '(M2)': 1, '(MO3)': 0}
+
+
+# # Filter out 'CO3' rows from both datasets
+# y_recidivism_severity = y_recidivism_severity[y_recidivism_severity != '(CO3)']
+# y_violence_severity = y_violence_severity[y_violence_severity != '(CO3)']
+
+# # Ensure X has matching indices after filtering out CO3 from y
+# X_compas_recidivism = X_compas_recidivism.loc[y_recidivism_severity.index]
+# X_compas_violence = X_compas_violence.loc[y_violence_severity.index]
+
+# # Apply the severity mapping to the filtered data
+# y_recidivism_severity = y_recidivism_severity.map(severity_mapping)
+# y_violence_severity = y_violence_severity.map(severity_mapping)
+
+# # Drop NaN values in case of any missing mappings
+# y_recidivism_severity = y_recidivism_severity.dropna().astype(int)
+# y_violence_severity = y_violence_severity.dropna().astype(int)
+
+# X_compas_recidivism = X_compas_recidivism.loc[y_recidivism_severity.index]
+# X_compas_violence = X_compas_violence.loc[y_violence_severity.index]
+
+
+# # Split data for recidivism classification
+# X_compas_recidivism_train, X_compas_recidivism_test, y_compas_recidivism_severity_train, y_compas_recidivism_severity_test = train_test_split(
+#     X_compas_recidivism, y_recidivism_severity, test_size=0.2, random_state=42)
+
+# # Split data for violence classification
+# X_compas_violence_train, X_compas_violence_test, y_compas_violence_severity_train, y_compas_violence_severity_test = train_test_split(
+#     X_compas_violence, y_violence_severity, test_size=0.2, random_state=42)
+
+# # Conserves the original dataset indexes before transforming it
+# X_compas_recidivism_test_indices = X_compas_recidivism_test.index
+# X_compas_recidivism_train_indices = X_compas_recidivism_train.index
+# X_compas_violence_test_indices = X_compas_violence_test.index
+# X_compas_violence_train_indices = X_compas_violence_train.index
+
+# y_compas_recidivism_severity_test_indices = y_compas_recidivism_severity_test.index
+# y_compas_recidivism_severity_train_indices = y_compas_recidivism_severity_train.index
+# y_compas_violence_severity_test_indices = y_compas_violence_severity_test.index
+# y_compas_violence_severity_train_indices = y_compas_violence_severity_train.index
+
+# # Convert to DataFrame to drop rows with NaN values
+# X_compas_recidivism_train_df = pd.DataFrame(X_compas_recidivism_train, index=X_compas_recidivism_train_indices)
+# X_compas_recidivism_test_df = pd.DataFrame(X_compas_recidivism_test, index=X_compas_recidivism_test_indices)
+# X_compas_violence_train_df = pd.DataFrame(X_compas_violence_train, index=X_compas_violence_train_indices)
+# X_compas_violence_test_df = pd.DataFrame(X_compas_violence_test, index=X_compas_violence_test_indices)
+
+# y_compas_recidivism_severity_train_df = pd.DataFrame(y_compas_recidivism_severity_train, index=y_recidivism_severity_train_indices)
+# y_compas_recidivism_severity_test_df = pd.DataFrame(y_compas_recidivism_severity_test, index=y_recidivism_severity_test_indices)
+# y_compas_violence_severity_train_df = pd.DataFrame(y_compas_violence_severity_train, index=y_violence_severity_train_indices)
+# y_compas_violence_severity_test_df = pd.DataFrame(y_compas_violence_severity_test, index=y_violence_severity_test_indices)
+
+# # Drop rows with NaN values in y and update X accordingly
+# y_compas_recidivism_severity_train_df.dropna(inplace=True)
+# X_compas_recidivism_train_df = X_compas_recidivism_train_df.loc[y_compas_recidivism_severity_train_df.index]
+
+# y_compas_recidivism_severity_test_df.dropna(inplace=True)
+# X_compas_recidivism_test_df = X_compas_recidivism_test_df.loc[y_compas_recidivism_severity_test_df.index]
+
+# y_compas_violence_severity_train_df.dropna(inplace=True)
+# X_compas_violence_train_df = X_compas_violence_train_df.loc[y_compas_violence_severity_train_df.index]
+
+# y_compas_violence_severity_test_df.dropna(inplace=True)
+# X_compas_violence_test_df = X_compas_violence_test_df.loc[y_compas_violence_severity_test_df.index]
+
+# # Drop rows with NaN values in X and update y accordingly
+# X_compas_recidivism_train_df.dropna(inplace=True)
+# y_compas_recidivism_severity_train_df = y_compas_recidivism_severity_train_df.loc[X_compas_recidivism_train_df.index]
+
+# X_compas_recidivism_test_df.dropna(inplace=True)
+# y_compas_recidivism_severity_test_df = y_compas_recidivism_severity_test_df.loc[X_compas_recidivism_test_df.index]
+
+# X_compas_violence_train_df.dropna(inplace=True)
+# y_compas_violence_severity_train_df = y_compas_violence_severity_train_df.loc[X_compas_violence_train_df.index]
+
+# X_compas_violence_test_df.dropna(inplace=True)
+# y_compas_violence_severity_test_df = y_compas_violence_severity_test_df.loc[X_compas_violence_test_df.index]
+
+# # Convert DataFrame back to NumPy arrays
+# X_compas_recidivism_train = X_compas_recidivism_train_df
+# X_compas_recidivism_test = X_compas_recidivism_test_df
+# X_compas_violence_train = X_compas_violence_train_df
+# X_compas_violence_test = X_compas_violence_test_df
+
+# y_compas_recidivism_severity_train = y_compas_recidivism_severity_train_df.values.ravel()
+# y_compas_recidivism_severity_test = y_compas_recidivism_severity_test_df.values.ravel()
+# y_compas_violence_severity_train = y_compas_violence_severity_train_df.values.ravel()
+# y_compas_violence_severity_test = y_compas_violence_severity_test_df.values.ravel()
+
+# X_compas_recidivism_train = X_compas_recidivism_train_df
+# X_compas_recidivism_test = X_compas_recidivism_test_df
+# X_compas_violence_train = X_compas_violence_train_df
+# X_compas_violence_test = X_compas_violence_test_df
+
+# X_compas_recidivism_test_indices = X_compas_recidivism_test.index
+# X_compas_recidivism_train_indices = X_compas_recidivism_train.index
+# X_compas_violence_test_indices = X_compas_violence_test.index
+# X_compas_violence_train_indices = X_compas_violence_train.index
+
+# # Preprocess the data for the original recidivism pipeline
+# X_compas_recidivism_train, X_compas_recidivism_test = recidivism_compass_preproccessing.preprocessor(X_compas_recidivism_train, X_compas_recidivism_test)
+# X_compas_violence_train, X_compas_violence_test = violence_compass_preproccessing.preprocessor(X_compas_violence_train, X_compas_violence_test)
+
+# # Recidivism classification pipeline using COMPAS data without adversarial debiasing
+# pipeline_compas_recidivism = severity_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compas_recidivism_severity_train, 
+#     X_compas_recidivism_test, y_compas_recidivism_severity_test, recidivismData, X_compas_recidivism_test_indices, 'race', adversarial=False, 
+#     training_name='noAdversarialNoPostTrainedCompasRecidivismSeverity')
+
+# pipeline_compas_recidivism.fit()
+# pipeline_compas_recidivism.predict()
+
+# # Evaluate bias for each racial group using COMPAS data for recidivism
+# racialBiasDetectionMulti.evaluate_bias(X_compas_recidivism_test, y_compas_recidivism_severity_test, 
+#     pipeline_compas_recidivism.get_final_pred(), recidivismData, X_compas_recidivism_test_indices, 'race')
+
+# # Violence classification pipeline using COMPAS data without adversarial debiasing
+# pipeline_compas_violence = severity_model_pipeline.CustomPipeline(X_compas_violence_train, y_compas_violence_severity_train, 
+#     X_compas_violence_test, y_compas_violence_severity_test, recidivismData, X_compas_violence_test_indices, 'race', adversarial=False,
+#     training_name='noAdversarialNoPostTrainedCompasViolenceSeverity')
+
+# pipeline_compas_violence.fit()
+# pipeline_compas_violence.predict()
+
+# # Evaluate bias for each racial group using COMPAS data for violence
+# racialBiasDetectionMulti.evaluate_bias(X_compas_violence_test, y_compas_violence_severity_test, 
+#     pipeline_compas_violence.get_final_pred(), recidivismData, X_compas_violence_test_indices, 'race')
 
 # <<---------------------------------------------------------------------------------------------------->>
 # <<---------------------------------------------------------------------------------------------------->>
@@ -635,11 +641,10 @@ racialBiasDetectionMulti.evaluate_bias(X_compas_violence_test, y_compas_violence
 # <<---------------------------------------------------------------------------------------------------->>
 # <<---------------------------------------------------------------------------------------------------->>
 
-# This is for classification of the time it takes for recidivism to occur again
-# This is for classification of the time it takes for recidivism to occur again
-# This is for classification of the time it takes for recidivism to occur again
-# This is for classification of the time it takes for recidivism to occur again
-
+# This is for classification of the severity of the Violence + Recidivism crime.
+# This is for classification of the severity of the Violence + Recidivism crime.
+# This is for classification of the severity of the Violence + Recidivism crime.
+# This is for classification of the severity of the Violence + Recidivism crime.
 import models.recidivism.date.model_pipeline as date_model_pipeline
 
 # 1. Convert date columns to datetime, ensuring proper format
@@ -725,7 +730,6 @@ X_recidivism_train_indices = X_recidivism_train_df.index
 X_violence_test_indices = X_violence_test_df.index
 X_violence_train_indices = X_violence_train_df.index
 
-print("Recedivism day prediction without adversarial debiasing")
 # Train Recidivism Pipeline (without adversarial debiasing)
 pipeline = date_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_date_train, X_recidivism_test, 
              y_recidivism_date_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=False
@@ -733,7 +737,6 @@ pipeline = date_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_d
 pipeline.fit()
 pipeline.predict()
 
-print("Violence day prediction without adversarial debiasing")
 # Train Violence Pipeline (without adversarial debiasing)
 pipelineviolence = date_model_pipeline.CustomPipeline(X_violence_train, y_violence_date_train, X_violence_test, 
              y_violence_date_test, recidivismData, X_violence_test_indices, 'race', adversarial=False,
@@ -741,14 +744,12 @@ pipelineviolence = date_model_pipeline.CustomPipeline(X_violence_train, y_violen
 pipelineviolence.fit()
 pipelineviolence.predict()
 
-print("Recedivism day prediction with adversarial debiasing")
 # Train Recidivism Pipeline (with adversarial debiasing)
 pipelineadversarial = date_model_pipeline.CustomPipeline(X_recidivism_train, y_recidivism_date_train, X_recidivism_test, 
              y_recidivism_date_test, recidivismData, X_recidivism_test_indices, 'race', adversarial=True, training_name='adversarialNoPostRecidivismDate')
 pipelineadversarial.fit(race_train=race_recidivism_train_encoded)
 pipelineadversarial.predict()
 
-print("Violence day prediction with adversarial debiasing")
 # Train Violence Pipeline (with adversarial debiasing)
 pipelineadversarialviolence = date_model_pipeline.CustomPipeline(X_violence_train, y_violence_date_train, X_violence_test, 
              y_violence_date_test, recidivismData, X_violence_test_indices, 'race', adversarial=True, training_name='adversarialNoPostViolenceDate')
@@ -832,7 +833,6 @@ X_compas_recidivism_train_indices = X_compas_recidivism_train_df.index
 X_compas_violence_test_indices = X_compas_violence_test_df.index
 X_compas_violence_train_indices = X_compas_violence_train_df.index
 
-print("Compas Recedivism day prediction without adversarial debiasing")
 # Train Recidivism Pipeline (without adversarial debiasing)
 pipeline = date_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compas_recidivism_date_train, X_compas_recidivism_test, 
              y_compas_recidivism_date_test, recidivismData, X_compas_recidivism_test_indices, 'race', adversarial=False
@@ -840,7 +840,6 @@ pipeline = date_model_pipeline.CustomPipeline(X_compas_recidivism_train, y_compa
 pipeline.fit()
 pipeline.predict()
 
-print("Compas Violence day prediction without adversarial debiasing")
 # Train Violence Pipeline (without adversarial debiasing)
 pipelineviolence = date_model_pipeline.CustomPipeline(X_compas_violence_train, y_compas_violence_date_train, X_compas_violence_test, 
              y_compas_violence_date_test, recidivismData, X_compas_violence_test_indices, 'race', adversarial=False, 
