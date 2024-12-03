@@ -43,14 +43,14 @@ your_project/ \
 ├── data\
 ├── evaluations\
 ├── figuresAndVisualsforResearch\
-  8. Go into frontend and go into app.py
+  8. Go into frontend and go into app.py\
 your_project/ \
 ├── frontend \
     ├── static/ \
     ├── templates/ \
     ├── app.py  <<------ Go here \
     ├── forms.py \
-    ├── model_pipeline.py\
+    ├── model_pipeline.py
   9. Run app.py and in the terminal click on the link (cntrl + leftclick):
 ```
 http://127.0.0.1:5000
