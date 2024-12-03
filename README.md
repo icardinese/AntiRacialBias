@@ -29,29 +29,29 @@ py -m venv venv
 ```
 pip install -r requirements.txt
 ```
-  5. Now download the AI models by referring to this google drive link:
+  5. Now download the AI models by referring to this google drive link:\
 link
-  6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)\n
-Example File Structure:
-your_project/
-├── ai model 1
-├── ai model 2
-├── ai model 3
-.
-.
-.
-├── data
-├── evaluations
-├── figuresAndVisualsforResearch
-  7. Go into frontend and go into app.py
-your_project/
-├── frontend
-    ├── static/
-    ├── templates/
-    ├── app.py  <<------ Go here
-    ├── forms.py
-    ├── model_pipeline.py
-  8. Run app.py and in the terminal click on the link (cntrl + leftclick):
+  6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)\
+Example File Structure:\
+your_project/ \
+├── ai model 1\
+├── ai model 2\
+├── ai model 3\
+.\
+.\
+.\
+├── data\
+├── evaluations\
+├── figuresAndVisualsforResearch\
+  8. Go into frontend and go into app.py
+your_project/ \
+├── frontend \
+    ├── static/ \
+    ├── templates/ \
+    ├── app.py  <<------ Go here \
+    ├── forms.py \
+    ├── model_pipeline.py\
+  9. Run app.py and in the terminal click on the link (cntrl + leftclick):
 ```
 http://127.0.0.1:5000
 ```
