@@ -8,8 +8,13 @@
             <div class="card text-white bg-info mb-3">
                 <div class="card-header">Recidivism Prediction</div>
                 <div class="card-body">
-                    <p class="card-text">Probability: <strong>{{ (recidivism_prob * 100) | round(2) }}%</strong></p>
+                    <p class="card-text">Probability: <strong>{{ (recidivism_prob[0][0] * 100) | round(2) }}%</strong></p>
                     <p class="card-text">Risk Level: <span class="badge badge-pill badge-light">{{ recidivism_score }}</span></p>
+                    <p class="card-text">Days until recidivism: <strong>{{ recidivism_date }}</strong></p>
+                    {% if recid_severity_probability %}
+                        <p class="card-text">Probability of the Crime Comitted: <strong>{{ recid_severity_probability * 100 }}%</strong></p>
+                        <p class="card-text">Severity of Crime: <strong>{{ recid_severity_classification }}</strong></p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -18,10 +23,20 @@
             <div class="card text-white bg-danger mb-3">
                 <div class="card-header">Violent Recidivism Prediction</div>
                 <div class="card-body">
-                    <p class="card-text">Probability: <strong>{{ (violent_recidivism_prob * 100) | round(2) }}%</strong></p>
+                    <p class="card-text">Probability: <strong>{{ (violent_recidivism_prob[0][0] * 100) | round(2) }}%</strong></p>
                     <p class="card-text">Risk Level: <span class="badge badge-pill badge-light">{{ violent_recidivism_score }}</span></p>
+                    <p class="card-text">Days until violent recidivism: <strong>{{ violence_date }}</strong></p>
+                    {% if violence_severity_probability %}
+                        <p class="card-text">Probability of the Violent Crime Comitted: <strong>{{ violence_severity_probability * 100 }}%</strong></p>
+                        <p class="card-text">Severity of Crime: <strong>{{ violence_severity_classification }}</strong></p>
+                    {% endif %}
                 </div>
             </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('static', filename='reports/' + pdf_filename) }}" class="btn btn-success" target="_blank">
+                Download Report
+            </a>
         </div>
     </div>
 </div>

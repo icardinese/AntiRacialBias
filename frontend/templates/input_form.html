@@ -36,39 +36,16 @@
                 <input type="number" class="form-control" name="c_days_from_compas" value="{{ prefill_data.get('c_days_from_compas', '') }}" required>
             </div>
             <div class="form-group col-md-3">
-                <label for="decile_score">Decile Score:</label>
-                <input type="number" class="form-control" name="decile_score" value="{{ prefill_data.get('decile_score', '') }}" required>
-            </div>
-        </div>
-
-        <!-- Categorical Ordinal Inputs -->
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="score_text">Score Text:</label>
-                <select class="form-control" name="score_text" required>
-                    <option value="Low" {% if prefill_data.get('score_text') == 'Low' %}selected{% endif %}>Low</option>
-                    <option value="Medium" {% if prefill_data.get('score_text') == 'Medium' %}selected{% endif %}>Medium</option>
-                    <option value="High" {% if prefill_data.get('score_text') == 'High' %}selected{% endif %}>High</option>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="c_charge_degree">Charge Degree:</label>
-                <select class="form-control" name="c_charge_degree" required>
-                    <option value="M" {% if prefill_data.get('c_charge_degree') == 'M' %}selected{% endif %}>Misdemeanor</option>
-                    <option value="F" {% if prefill_data.get('c_charge_degree') == 'F' %}selected{% endif %}>Felony</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Categorical Nominal Inputs -->
-        <div class="form-row">
-            <div class="form-group col-md-6">
                 <label for="sex">Sex:</label>
                 <select class="form-control" name="sex" required>
                     <option value="Male" {% if prefill_data.get('sex') == 'Male' %}selected{% endif %}>Male</option>
                     <option value="Female" {% if prefill_data.get('sex') == 'Female' %}selected{% endif %}>Female</option>
                 </select>
             </div>
+        </div>
+
+        <!-- Categorical Nominal Inputs -->
+        <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="race">Race:</label>
                 <select class="form-control" name="race" required>
@@ -78,6 +55,40 @@
                     <option value="Asian" {% if prefill_data.get('race') == 'Asian' %}selected{% endif %}>Asian</option>
                     <option value="Native American" {% if prefill_data.get('race') == 'Native American' %}selected{% endif %}>Native American</option>
                     <option value="Other" {% if prefill_data.get('race') == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="score_text">Score Text:</label>
+                <select class="form-control" name="score_text" required>
+                    <option value="Low" {% if prefill_data.get('score_text') == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if prefill_data.get('score_text') == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if prefill_data.get('score_text') == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="decile_score">Decile Score:</label>
+                <input type="number" class="form-control" name="decile_score" value="{{ prefill_data.get('decile_score', '') }}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="score_text">Violence Score Text:</label>
+                <select class="form-control" name="v_score_text" required>
+                    <option value="Low" {% if prefill_data.get('score_text') == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if prefill_data.get('score_text') == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if prefill_data.get('score_text') == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="decile_score">Violence Decile Score:</label>
+                <input type="number" class="form-control" name="v_decile_score" value="{{ prefill_data.get('decile_score', '') }}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="c_charge_degree">Charge Degree:</label>
+                <select class="form-control" name="c_charge_degree" required>
+                    <option value="(M1)" {% if prefill_data.get('c_charge_degree') == '(M1)' %}selected{% endif %}>Misdemeanor, 1st Degree</option>
+                    <option value="(M2)" {% if prefill_data.get('c_charge_degree') == '(M2)' %}selected{% endif %}>Misdemeanor, 2nd Degree</option>
+                    <option value="(F1)" {% if prefill_data.get('c_charge_degree') == '(F1)' %}selected{% endif %}>Felony, 1st Degree</option>
+                    <option value="(F2)" {% if prefill_data.get('c_charge_degree') == '(F2)' %}selected{% endif %}>Felony, 2nd Degree</option>
+                    <option value="(F3)" {% if prefill_data.get('c_charge_degree') == '(F3)' %}selected{% endif %}>Felony, 3rd Degree</option>
                 </select>
             </div>
         </div>

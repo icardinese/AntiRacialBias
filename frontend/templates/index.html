@@ -1,10 +1,70 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron jumbotron-fluid text-center text-white" style="background-image: url('{{ url_for('static', filename='images/justice-bg.jpg') }}'); background-size: cover; background-position: center;">
+<div class="jumbotron jumbotron-fluid text-center text-white" 
+     style="background-image: url('{{ url_for('static', filename='images/justice-bg.jpg') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            padding: 6rem 1rem;">
     <div class="container">
-        <h1 class="display-4">Predicting the Future of Justice</h1>
-        <p class="lead">Experience the power of advanced analytics in assessing recidivism risks.</p>
-        <a href="{{ url_for('input_form') }}" class="btn btn-primary btn-lg">Get Started</a>
+        <h1 class="display-4 font-weight-bold">Shaping the Future of Justice</h1>
+        <p class="lead mt-3 mb-4">Harness AI to assess recidivism risks and empower decision-making.</p>
+        <a href="{{ url_for('input_form') }}" class="btn btn-primary btn-lg shadow-lg">Get Started</a>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Section 1: Narrative Introduction -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h2 class="font-weight-bold">Why Predict Justice?</h2>
+            <p class="text-muted">
+                Our mission is to leverage AI to create a fairer judicial system. By predicting recidivism risks with precision and transparency, we aim to assist professionals in making more informed, unbiased decisions. Together, we can reduce systemic inequality and foster safer communities.
+            </p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{{ url_for('static', filename='images/cimre.jpg') }}" class="img-fluid" alt="Scales of Justice">
+        </div>
+    </div>
+
+    <!-- Section 2: Features -->
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-light">
+                <div class="card-body">
+                    <img src="{{ url_for('static', filename='images/accurate.jpg') }}" class="mb-3" alt="Accuracy" width="50">
+                    <h5 class="card-title font-weight-bold">High Accuracy</h5>
+                    <p class="card-text text-muted">Our models deliver precision, ensuring reliable predictions for recidivism and violent behavior.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-light">
+                <div class="card-body">
+                    <img src="{{ url_for('static', filename='images/scalesofjustice.jpg') }}" class="mb-3" alt="Fairness" width="50">
+                    <h5 class="card-title font-weight-bold">Ethical & Transparent</h5>
+                    <p class="card-text text-muted">Designed to minimize bias, our system is built with fairness and transparency in mind.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-light">
+                <div class="card-body">
+                    <img src="{{ url_for('static', filename='images/AI.jpg') }}" class="mb-3" alt="AI-powered" width="50">
+                    <h5 class="card-title font-weight-bold">AI-Powered Insights</h5>
+                    <p class="card-text text-muted">Leverage the latest advancements in AI to uncover insights that drive impactful decisions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Call to Action -->
+    <div class="text-center">
+        <h3 class="font-weight-bold mb-3">Join Us in Transforming Justice</h3>
+        <p class="text-muted mb-4">
+            Be part of a revolutionary step forward. Click below to start predicting with confidence.
+        </p>
+        <img src="{{ url_for('static', filename='images/racial.jpg') }}" class="img-fluid" alt="AI-powered" width="50">
+        <a href="{{ url_for('input_form') }}" class="btn btn-success btn-lg shadow-lg">Start Predicting</a>
     </div>
 </div>
 {% endblock %}
