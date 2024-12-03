@@ -42,7 +42,7 @@ your_project/ \
 .\
 ├── data\
 ├── evaluations\
-├── figuresAndVisualsforResearch\
+├── figuresAndVisualsforResearch
   8. Go into frontend and go into app.py\
 your_project/ \
 ├── frontend \
