@@ -58,7 +58,7 @@ your_project/
 | ├── forms.py 
 | ├── model_pipeline.py
 ```
-  10. Run app.py and in the terminal click on the link (cntrl + leftclick):
+  9. Run app.py and in the terminal click on the link (cntrl + leftclick):
 ```
 http://127.0.0.1:5000
 ```
