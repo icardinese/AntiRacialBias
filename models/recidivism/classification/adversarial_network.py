@@ -48,11 +48,19 @@ class AdversarialNetwork:
     def save(self, filename):
         self.main_model.save(f'advmainneural_network_model_{filename}.h5')
         self.adversary_model.save(f'adversaryneural_network_model_{filename}.h5')
+
+    def real_predict(self, X_test):
+        # Predict using the main model
+        probabilities = self.model.predict(X_test)  # Returns probabilities
+        return (probabilities > 0.5).astype(int)
+
+    def real_predict_proba(self, X_test):
+        # Predict probabilities using the main model
+        return self.model.predict(X_test)
     
     # Load the model
     def load(self, filename):
-        self.main_model = tf.keras.models.load_model(f"advmainneural_network_model_{filename}.h5")
+        self.model = tf.keras.models.load_model(f"advmainneural_network_model_{filename}.h5")
         # Re-wrap the model with KerasClassifier if necessary
-        self.model = KerasClassifier(model=self.main_model, epochs=10,
-                                     batch_size=32, verbose=0)
         self.adversary_model = tf.keras.models.load_model(f"adversaryneural_network_model_{filename}.h5")
+        return self.model
