@@ -15,8 +15,8 @@ def preprocessor(X_train, X_test):
     )
 
     # Conserves the original dataset indexes before transforming it to a csr_matrix by preprocessor
-    X_test_indices = X_test.index
-    X_train_indices = X_train.index
+    # X_test_indices = X_test.index
+    # X_train_indices = X_train.index
 
     # Apply transformations
     X_train = preprocessor.fit_transform(X_train)

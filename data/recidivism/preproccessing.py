@@ -1,6 +1,7 @@
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+import joblib
 # Define the column transformer with imputation
 # One-hot encoding of categorial variables. 
 # For more information look here: https://pandas.pydata.org/docs/reference/api/pandas.get_dummies.html
@@ -27,4 +28,10 @@ def preprocessor(X_train, X_test):
     # Convert spacrse matrices to dense arrays so model can interpret the data
     # X_train = X_train.toarray()
     # X_test = X_test.toarray()
+    joblib.dump(preprocessor, "preprocessor.pkl")
     return X_train, X_test
+
+def preproccess(input_data):
+    preprocessor = joblib.load("preprocessor.pkl")
+    processed_data = preprocessor.transform(input_data)
+    return processed_data
