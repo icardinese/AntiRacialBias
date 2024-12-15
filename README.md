@@ -30,7 +30,7 @@ py -m venv venv
 pip install -r requirements.txt
 ```
   5. Now download the AI models by referring to this google drive link:\
-https://drive.google.com/drive/folders/1CyJdZ_KwPsd4oYzD6neZkl38x6smDncj?usp=sharing
+https://drive.google.com/drive/folders/1qXH_A42PaQdAp8pdkYtSfVnlz-STRxGs?usp=drive_link
   6. Put all these AI models right under the project directory and not in any folders. (This will mess up the paths)\
 Example File Structure:\
 ```
